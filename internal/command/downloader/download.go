@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"net/http"
 	"os"
 	"time"
 
@@ -32,7 +31,11 @@ func (d *Download) HandlerRequest(ctx *cli.Context, dl *Downloader) {
 
 			for i := 1; i <= item.Pages; i++ {
 				bookUrl := fmt.Sprintf(item.QueryUrl, i, time.Now().Unix())
-				resp, err := http.Get(bookUrl)
+
+				external := &HttpExternal{}
+				resp, err := external.GetWithHeader(bookUrl)
+				//resp, err := http.Get(bookUrl)
+
 				if err != nil {
 					dl.PrintLog("http.Get", "请求"+bookUrl+"失败", err)
 
